@@ -2,8 +2,7 @@
 	import { buttonColorMapping } from '$lib/constants/buttonColorMapping';
 	import { currentTempoStore } from '../stores/currentTempoStore';
 	import Title from './Title.svelte';
-	import DecreaseTempoButton from './buttons/DecreaseTempoButton.svelte';
-	import IncreaseTempoButton from './buttons/IncreaseTempoButton.svelte';
+	import IncreaseOrDecreaseTempoButton from './buttons/IncreaseOrDecreaseTempoButton.svelte';
 	import PlayButton from './buttons/PlayButton.svelte';
 
 	const MAX_VALUE = 218;
@@ -31,7 +30,7 @@
 			<PlayButton />
 		</div>
 		<div class="flex items-center">
-			<DecreaseTempoButton />
+			<IncreaseOrDecreaseTempoButton direction="down" />
 			<input
 				id="default-range"
 				type="range"
@@ -42,7 +41,7 @@
 				bind:value={currentTempo}
 				class="w-full mx-2 outline-none h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
 			/>
-			<IncreaseTempoButton />
+			<IncreaseOrDecreaseTempoButton direction="up" />
 		</div>
 	</div>
 </section>
