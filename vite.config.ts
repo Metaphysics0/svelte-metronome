@@ -3,5 +3,6 @@ import { defineConfig } from 'vite';
 import UnoCss from 'unocss/vite';
 
 export default defineConfig({
-	plugins: [UnoCss(), sveltekit()]
+	plugins: [UnoCss(), sveltekit()],
+	assetsInclude: ['**/*.m4a']
 });

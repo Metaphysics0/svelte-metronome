@@ -19,9 +19,9 @@
 	}
 </script>
 
-<section class="mx-auto mt-10 font-sans border border-slate-200 py-3">
+<section class="mx-auto mt-10 font-sans border rounded-md border-slate-300 py-3">
 	<Title />
-	<div class="flex flex-col px-3 pb-3">
+	<div class="flex flex-col px-4 pb-3">
 		<div class="flex justify-between mb-5">
 			<p>
 				<strong class="text-4xl">{currentTempo}</strong>
