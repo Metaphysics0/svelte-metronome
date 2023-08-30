@@ -4,38 +4,86 @@
 	import { isPlayingStore } from '../../stores/isPlayingStore';
 	import Icon from '@iconify/svelte';
 
+	// @ts-ignore
 	import Tick from '$lib/sounds/tick.m4a';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	let audio;
-
+	let audioBuffer;
 	let currentColor: string = buttonColorMapping.default;
+
 	let currentTempo: number;
+	let prevTempo: number;
+
 	currentTempoStore.subscribe((v) => {
+		prevTempo = currentTempo;
 		currentTempo = v;
 		// @ts-ignore
 		currentColor = buttonColorMapping[v];
 	});
+
+	$: {
+		// @ts-ignore
+		if (prevTempo && currentTempo !== prevTempo && isPlaying && audioBuffer) {
+			console.log('CURR TEMPO', currentTempo);
+			console.log('CURR TEMPO', prevTempo);
+
+			tickInterval = connectAndStart(audioBuffer);
+		}
+	}
 
 	let isPlaying = false;
 	isPlayingStore.subscribe((val) => {
 		isPlaying = val;
 	});
 
-	function setIsPlaying(e: any): void {
-		isPlaying ? pauseAudio() : playAudio();
+	async function setIsPlaying(e: any) {
+		if (isPlaying) {
+			stopMetronome();
+			isPlayingStore.set(false);
+			return;
+		}
 
-		isPlayingStore.set(!isPlaying);
+		await startMetronome();
+		isPlayingStore.set(true);
 	}
 
-	function playAudio() {
-		// @ts-ignore
-		audio.play();
-		console.log('need to implement play');
+	onMount(async () => {
+		audioBuffer = await loadSound();
+	});
+
+	async function loadSound() {
+		const audioContext = new AudioContext();
+		const res = await fetch(Tick);
+		const buffer = await res.arrayBuffer();
+		return audioContext.decodeAudioData(buffer);
 	}
 
-	function pauseAudio() {
-		console.log('need to implement pause');
+	let tickInterval: any;
+	const startMetronome = async () => {
+		if (!browser) return;
+		audioBuffer ||= await loadSound();
+
+		tickInterval = connectAndStart(audioBuffer);
+	};
+
+	function connectAndStart(audioBuffer: AudioBuffer) {
+		clearInterval(tickInterval);
+		if (!browser) return;
+		const audioContext = new AudioContext();
+		const intervalMs = (60 / currentTempo) * 1000;
+		return setInterval(() => {
+			const source = audioContext.createBufferSource();
+			source.buffer = audioBuffer;
+			source.connect(audioContext.destination);
+			source.start(0);
+		}, intervalMs);
 	}
+
+	const stopMetronome = () => {
+		clearInterval(tickInterval);
+	};
 </script>
 
 <button on:click={setIsPlaying}>

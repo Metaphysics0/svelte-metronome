@@ -14,8 +14,19 @@
 		currentTempo = v;
 	});
 
-	function handleTempoChange(e: Event): void {
-		currentTempoStore.set(currentTempo);
+	function handleTempoChange(val: number): void {
+		currentTempoStore.set(val);
+	}
+
+	let timer;
+	function debounceAndHandleChange(e: any) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			const { value } = e.target;
+			if (!value) return;
+
+			handleTempoChange(e.target.value);
+		}, 100);
 	}
 </script>
 
@@ -37,7 +48,7 @@
 				max={MAX_VALUE}
 				min={MIN_VALUE}
 				style={`accent-color: ${buttonColorMapping[currentTempo]}`}
-				on:input={handleTempoChange}
+				on:input={debounceAndHandleChange}
 				bind:value={currentTempo}
 				class="w-full mx-2 outline-none h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
 			/>
