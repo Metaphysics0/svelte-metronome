@@ -10,8 +10,8 @@
 	import { onMount } from 'svelte';
 
 	let audio;
-	let audioBuffer;
-	let currentColor: string = buttonColorMapping.default;
+	let audioBuffer: AudioBuffer;
+	$: currentColor = buttonColorMapping.default;
 
 	let currentTempo: number;
 	let prevTempo: number;
@@ -24,11 +24,7 @@
 	});
 
 	$: {
-		// @ts-ignore
 		if (prevTempo && currentTempo !== prevTempo && isPlaying && audioBuffer) {
-			console.log('CURR TEMPO', currentTempo);
-			console.log('CURR TEMPO', prevTempo);
-
 			tickInterval = connectAndStart(audioBuffer);
 		}
 	}
@@ -68,6 +64,7 @@
 		tickInterval = connectAndStart(audioBuffer);
 	};
 
+	let ticked = 0;
 	function connectAndStart(audioBuffer: AudioBuffer) {
 		clearInterval(tickInterval);
 		if (!browser) return;
@@ -78,6 +75,8 @@
 			source.buffer = audioBuffer;
 			source.connect(audioContext.destination);
 			source.start(0);
+
+			ticked++;
 		}, intervalMs);
 	}
 
@@ -86,7 +85,7 @@
 	};
 </script>
 
-<button on:click={setIsPlaying}>
+<button on:click={setIsPlaying} class="outline-none">
 	{#if isPlaying}
 		<Icon width="45" color={currentColor} icon="mdi:pause-circle" />
 	{:else}
