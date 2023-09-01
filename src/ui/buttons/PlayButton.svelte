@@ -88,8 +88,10 @@
 <button on:click={setIsPlaying} class="outline-none">
 	{#if isPlaying}
 		<Icon width="45" color={currentColor} icon="mdi:pause-circle" />
+		<!-- <span class="i-mdi-pause-circle" /> -->
 	{:else}
-		<Icon width="45" color={currentColor} icon="mdi:play-circle" />
+		<Icon width="45" color={currentColor} style="color-red" icon="mdi:play-circle" />
+		<!-- <span class="i-mdi-play-circle" /> -->
 	{/if}
 </button>
 <audio src={Tick} bind:this={audio} />

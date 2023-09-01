@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { buttonColorMapping } from '$lib/constants/buttonColorMapping';
-	import { currentTempoStore } from '../stores/currentTempoStore';
+	import { MAX_TEMPO_VALUE, MIN_TEMPO_VALUE, currentTempoStore } from '../stores/currentTempoStore';
 	import Title from './Title.svelte';
 	import IncreaseOrDecreaseTempoButton from './buttons/IncreaseOrDecreaseTempoButton.svelte';
 	import PlayButton from './buttons/PlayButton.svelte';
-
-	const MAX_VALUE = 218;
-	const MIN_VALUE = 40;
 
 	let currentTempo = 100;
 
@@ -15,8 +12,10 @@
 	});
 
 	function handleTempoChange(e: any): void {
-		// @ts-ignore
-		currentTempoStore.set(e.target.value);
+		const value = Number(e.target.value);
+		if (value >= MIN_TEMPO_VALUE && value <= MAX_TEMPO_VALUE) {
+			currentTempoStore.set(value);
+		}
 	}
 </script>
 
@@ -35,8 +34,8 @@
 			<input
 				id="default-range"
 				type="range"
-				max={MAX_VALUE}
-				min={MIN_VALUE}
+				max={MAX_TEMPO_VALUE}
+				min={MIN_TEMPO_VALUE}
 				style={`accent-color: ${buttonColorMapping[currentTempo]}`}
 				on:input={handleTempoChange}
 				bind:value={currentTempo}

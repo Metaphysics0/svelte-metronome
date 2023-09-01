@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { currentTempoStore } from '../../stores/currentTempoStore';
+	import {
+		MAX_TEMPO_VALUE,
+		MIN_TEMPO_VALUE,
+		currentTempoStore
+	} from '../../stores/currentTempoStore';
 	import { buttonColorMapping } from '$lib/constants/buttonColorMapping';
 
 	export let direction: IAlterTempoDirection;
@@ -20,8 +24,15 @@
 
 	function alterTempo(): void {
 		direction === 'up'
-			? currentTempoStore.update((v) => v + 1)
-			: currentTempoStore.update((v) => v - 1);
+			? currentTempoStore.update((v) => {
+					if (v === MAX_TEMPO_VALUE) return v;
+
+					return v + 1;
+			  })
+			: currentTempoStore.update((v) => {
+					if (v === MIN_TEMPO_VALUE) return v;
+					return v - 1;
+			  });
 	}
 </script>
 
